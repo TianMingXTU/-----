@@ -40,8 +40,8 @@ class BankVault:
     def deposit(self, amount: int, loops: int) -> None:
         """单笔存钱：必须保证线程安全"""
         # TODO 2: 使用 with 语法糖优雅地上锁，并执行 self.balance += amount
-        for loop in loops:
-            with self.lock:
+        with self.lock:
+            for loop in range(loops):
                 self.balance += amount
 
     def batch_deposit(self, amounts: List[int]) -> None:
@@ -53,7 +53,7 @@ class BankVault:
         # 注意：这里内部调用的 self.deposit() 也会尝试获取同一把锁！
         # 如果你 TODO 1 选错了锁，这里一旦运行就会发生可怕的死锁。
         for amt in amounts:
-            self.deposit(amt)
+            self.deposit(1, amt)
 
 
 def pythonic_api_engine(vault: BankVault, num_threads: int, loops: int) -> None:
@@ -132,5 +132,5 @@ GIL 到底保护了什么？它为什么不保护 `self.balance += 1`？
 
 （提示：去查一下 Python 解释器把 `a += 1` 翻译成了几条基础的汇编/字节码指令，线程是在什么时候被强制切换的？）
 
-👉 回答区："在这里留下你的推演..."
+👉 回答区：因为+=不是原子语句，而不是三个语句，分为读取、计算、写入三个过程，这三个过程中，只要有其他的线程来进行修改或者读取就会出现问题。+=调用的魔法是__isadd__。
 """
