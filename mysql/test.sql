@@ -109,3 +109,11 @@ ALTER TABLE stu2 ADD PRIMARY KEY (id);
 ALTER Table stu2 DROP PRIMARY KEY;
 
 ALTER Table stu2 CHANGE id id INT PRIMARY KEY;
+
+CREATE Table ai_system_logs (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT "主键",
+    module_name VARCHAR(50) COMMENT "模块名",
+    run_time FLOAT NOT NULL COMMENT "耗时",
+    created_at TIMESTAMP
+);
+
